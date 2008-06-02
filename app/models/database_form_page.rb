@@ -20,7 +20,7 @@ class DatabaseFormPage < Page
       redirect_to = request.parameters[:redirect_to]
 
       if save_form and redirect_to
-        response.redirect(redirect_to)
+        response.redirect(redirect_to, "302")
       else
         super(request, response) 
       end
@@ -32,6 +32,14 @@ class DatabaseFormPage < Page
   # Save form data
   def save_form
     form_response = FormResponse.new(:name => form_name)
+
+    form_data.keys.each do |k|
+      if form_data[k].class.to_s =~ /ActionController::Uploaded/
+      	file = form_response.form_files.build(:uploaded_data => form_data[k])
+	form_data.delete(k)
+      end
+    end
+
     form_response.content = form_data
     if !form_response.save
       @form_error = "Error encountered while trying to submit form. #{$!}"
