@@ -22,18 +22,33 @@ class Admin::FormResponsesControllerTest < Test::Unit::TestCase
     assert_not_nil assigns(:form_names)
   end
 
-  def test_export
-    post :export
+  def test_export_xml
+    post :export, :commit => "Export as XML"
     assert_response :success
-    assert_match 'application/xml', @response.headers['Content-Type']
+    assert_match 'application/xml', @response.headers['type']
     assert_select 'form-responses'
   end
 
-  def test_export_filter
-    post :export, :filter => { :name => 'contact' }
+  def test_export_xml_filter
+    post :export, :commit => "Export as XML", :filter => { :name => 'contact' }
     assert_response :success
     assert_match '<name>nap</name', @response.body
     assert_select 'name', :text => 'ian'
     assert_select 'name', :text => 'inforequest', :count => 0
+  end
+  
+  def test_export_html
+    post :export, :commit => "View online"
+    assert_response :success
+    assert_match 'text/html', @response.headers['type']
+    assert_select 'table'
+  end
+
+  def test_export_xml_filter
+    post :export, :commit => "View online", :filter => { :name => 'contact' }
+    assert_response :success
+    assert_match '<td>nap</td', @response.body
+    assert_select 'table td', :text => 'ian'
+    assert_select 'table td', :text => 'inforequest', :count => 0
   end
 end

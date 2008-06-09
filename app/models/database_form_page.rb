@@ -34,9 +34,9 @@ class DatabaseFormPage < Page
     form_response = FormResponse.new(:name => form_name)
 
     form_data.keys.each do |k|
-      if form_data[k].class.to_s =~ /ActionController::Uploaded/
+            if form_data[k].class.to_s =~ /ActionController::.*Uploaded/
       	file = form_response.form_files.build(:uploaded_data => form_data[k])
-	form_data.delete(k)
+	      form_data.delete(k)
       end
     end
 

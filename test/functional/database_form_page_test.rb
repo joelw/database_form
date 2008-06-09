@@ -23,10 +23,22 @@ class DatabaseFormPageTest < Test::Unit::TestCase
     assert_equal "/", @response.headers['Location']
   end
 
+  def test_should_upload_file
+    assert_difference(FormResponse, :count) do
+      post_form_upload
+    end
+    assert_equal "upload.txt", FormResponse.find_by_name("uploadtest").form_files.first.filename
+  end
+
   private
 
   def post_form
     post :show_page, :url => ["contact"], "form_name" => "contact", 
       :redirect_to => "/", :content => { "home_phone" => "111-222-3333", "name" => "nick" }
+  end
+  
+  def post_form_upload
+    post :show_page, :url => ["contact"], "form_name" => "uploadtest", 
+      :redirect_to => "/", :content => { "home_phone" => "111-222-3333", "name" => "nick", "file" => fixture_file_upload('/upload.txt') }
   end
 end
