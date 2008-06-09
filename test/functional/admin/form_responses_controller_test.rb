@@ -4,7 +4,7 @@ require File.dirname(__FILE__) + '/../../test_helper'
 Admin::FormResponsesController.class_eval { def rescue_action(e) raise e end }
 
 class Admin::FormResponsesControllerTest < Test::Unit::TestCase
-  fixtures :form_responses
+  fixtures :form_responses, :form_files
   test_helper :login
 
   def setup
@@ -51,4 +51,12 @@ class Admin::FormResponsesControllerTest < Test::Unit::TestCase
     assert_select 'table td', :text => 'ian'
     assert_select 'table td', :text => 'inforequest', :count => 0
   end
+  
+  def test_export_uploads
+    post :export, :commit => "View online", :filter => { :name => 'fileupload' }
+    assert_response :success
+    assert_select 'table td', :text => 'Attachment', :count => 2
+    assert_select 'table td', :text => 'testfile1.txt'
+  end
+  
 end

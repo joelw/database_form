@@ -39,6 +39,6 @@ class DatabaseFormPageTest < Test::Unit::TestCase
   
   def post_form_upload
     post :show_page, :url => ["contact"], "form_name" => "uploadtest", 
-      :redirect_to => "/", :content => { "home_phone" => "111-222-3333", "name" => "nick", "file" => fixture_file_upload('/upload.txt') }
+      :redirect_to => "/", :content => { "home_phone" => "111-222-3333", "name" => "nick", "file" => fixture_file_upload('/files/upload.txt') }
   end
 end
